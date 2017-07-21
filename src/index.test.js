@@ -16,3 +16,18 @@ describe('set custom status', () => {
     });
   });
 });
+
+describe('set custom status using short instanceID', () => {
+  it('should update custom status using short instanceID', (done) => {
+    let chronos = new Chronos(Config);
+    chronos.updateJobStatus(Config.shortInstanceID, Config.status + "--short--")
+    .then(() => {
+      done();
+    })
+    .catch(error => {
+      console.log(error);
+      expect(true).to.be.false;
+      done();
+    });
+  });
+});

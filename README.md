@@ -28,3 +28,13 @@ Config should contain the following information:
 ```
 chronos.updateJobStatus(instanceID, status)
 ```
+
+You can get the value of instanceID from SDK with this call:
+```
+chronos.getShortInstanceID()
+```
+
+or if you are in the shell of your container with:
+```
+cat /etc/hostname
+```

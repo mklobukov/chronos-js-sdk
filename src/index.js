@@ -1,5 +1,6 @@
 import Fetch from 'isomorphic-fetch';
 import jws from 'jws';
+import os from 'os';
 
 const LOGIN_TYPE_SERVER = "Server"
 
@@ -76,6 +77,10 @@ export class Chronos {
     .catch(error => {
       return Promise.reject(error);
     });
+  }
+
+  getShortInstanceID() {
+    return os.hostname()
   }
 
   updateJobStatus(instanceID, status) {
