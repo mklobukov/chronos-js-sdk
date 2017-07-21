@@ -8,8 +8,8 @@
     "prebuild": "rimraf dist",
     "build": "npm-run-all --parallel build:*",
     "build:main": "babel --copy-files --out-dir dist src",
-    "build:umd": "webpack --output-filename iris.auth.js",
-    "build:umd.min": "webpack --output-filename iris.auth.min.js -p"
+    "build:umd": "webpack --output-filename chronos.sdk.js",
+    "build:umd.min": "webpack --output-filename chronos.sdk.min.js -p"
   },
   "babel": {
     "presets": [

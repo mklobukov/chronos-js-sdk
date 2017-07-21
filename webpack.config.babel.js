@@ -7,7 +7,7 @@ export default {
   output: {
     path: join(__dirname, 'dist'),
     libraryTarget: 'umd',
-    library: 'irisAuth',
+    library: 'chronos-sdk',
   },
   devtool: 'source-map',
   module: {
