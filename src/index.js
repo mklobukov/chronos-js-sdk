@@ -82,7 +82,6 @@ export class Chronos {
     if (this.token === '') {
       return this._getToken()
       .then(token => {
-        console.log('TOKEN: ', token);
         this.token = token;
         return this._updateJobStatus(instanceID, status);
       })
