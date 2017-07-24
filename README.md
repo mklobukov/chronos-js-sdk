@@ -3,7 +3,7 @@
 This is SDK can be used by Chronos jobs to update job's status with custom data.
 
 ```
-npm i chronos-js-sdk
+npm i chronos-sdk
 ```
 
 ## Initialize SDK
