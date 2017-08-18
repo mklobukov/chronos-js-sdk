@@ -65,6 +65,21 @@ export class Chronos {
     .then(this._parseJSON)
   }
 
+  _getJobArgs(instanceID) {
+    const base64Auth = getAuthString(this.config);
+    const requestHeader = new Headers();
+    requestHeader.append('Content-Type', 'application/json');
+    requestHeader.append('Authorization', `Bearer ${this.token}`);
+
+    const getArgsURL = `${this.config.chronosURL}/v1/getargs/instanceid/${instanceID}`
+    return fetch(getArgsURL, {
+      method: 'GET',
+      headers: requestHeader
+    })
+    .then(this._checkStatus)
+    .then(this._parseJSON)
+  }
+
   _getToken() {
     return this._serverLoginAsync()
     .then(data => {
@@ -96,5 +111,21 @@ export class Chronos {
     } else {
       return this._updateJobStatus(instanceID, status);
     }
+  }
+
+  getJobArgs(instanceID) {
+    return this._getJobArgs(instanceID)
+    .then((data) => {
+      if (data && data.args) {
+        return Promise.resolve(data.args);
+      } else {
+        return Promise.reject(new Error(response.statusText));
+      }
+    })
+    .catch(
+      error => {
+        return Promise.reject(error);
+      }
+    )
   }
 }
