@@ -48,37 +48,6 @@ export class Chronos {
     .then(this._parseJSON)
   }
 
-  _updateJobStatus(instanceID, status) {
-    const base64Auth = getAuthString(this.config);
-    const requestHeader = new Headers();
-    requestHeader.append('Content-Type', 'application/json');
-    requestHeader.append('Authorization', `Bearer ${this.token}`);
-    return fetch(this.config.chronosURL + '/v1/jobcustomstatus', {
-      method: 'POST',
-      headers: requestHeader,
-      body: JSON.stringify({
-        'instance_id': instanceID,
-        'status': status
-      }),
-    })
-    .then(this._checkStatus)
-    .then(this._parseJSON)
-  }
-
-  _getJobArgs(instanceID) {
-    const base64Auth = getAuthString(this.config);
-    const requestHeader = new Headers();
-    requestHeader.append('Content-Type', 'application/json');
-    requestHeader.append('Authorization', `Bearer ${this.token}`);
-
-    const getArgsURL = `${this.config.chronosURL}/v1/getargs/instanceid/${instanceID}`
-    return fetch(getArgsURL, {
-      method: 'GET',
-      headers: requestHeader
-    })
-    .then(this._checkStatus)
-    .then(this._parseJSON)
-  }
 
   _getToken() {
     return this._serverLoginAsync()
@@ -98,6 +67,23 @@ export class Chronos {
     return os.hostname()
   }
 
+  _updateJobStatus(instanceID, status) {
+    const base64Auth = getAuthString(this.config);
+    const requestHeader = new Headers();
+    requestHeader.append('Content-Type', 'application/json');
+    requestHeader.append('Authorization', `Bearer ${this.token}`);
+    return fetch(this.config.chronosURL + '/v1/jobcustomstatus', {
+      method: 'POST',
+      headers: requestHeader,
+      body: JSON.stringify({
+        'instance_id': instanceID,
+        'status': status
+      }),
+    })
+    .then(this._checkStatus)
+    .then(this._parseJSON)
+  }
+
   updateJobStatus(instanceID, status) {
     if (this.token === '') {
       return this._getToken()
@@ -113,8 +99,23 @@ export class Chronos {
     }
   }
 
-  getJobArgs(instanceID) {
-    return this._getJobArgs(instanceID)
+  _jobArgsGetRequest(instanceID) {
+    const base64Auth = getAuthString(this.config);
+    const requestHeader = new Headers();
+    requestHeader.append('Content-Type', 'application/json');
+    requestHeader.append('Authorization', `Bearer ${this.token}`);
+
+    const getArgsURL = `${this.config.chronosURL}/v1/getargs/instanceid/${instanceID}`
+    return fetch(getArgsURL, {
+      method: 'GET',
+      headers: requestHeader
+    })
+    .then(this._checkStatus)
+    .then(this._parseJSON)
+  }
+
+  _getJobArgs(instanceID) {
+    return this._jobArgsGetRequest(instanceID)
     .then((data) => {
       if (data && data.args) {
         return Promise.resolve(data.args);
@@ -128,4 +129,17 @@ export class Chronos {
       }
     )
   }
+
+  getJobArgs(instanceID) {
+    if (this.token === '') {
+      return this._getToken()
+      .then(token => {
+        this.token = token;
+        return this._getJobArgs(instanceID)
+      })
+    } else {
+      return this._getJobArgs(instanceID)
+    }
+}
+
 }
